@@ -29,7 +29,9 @@ namespace TodoApp
         {
             var config = new ServerConfig();
             Configuration.Bind(config);
+            var todoContext = new TodoContext(config.MongoDB);
 
+            services.AddSingleton<ITodoRepository>(new TodoRepository(todoContext));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
