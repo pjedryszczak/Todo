@@ -37,8 +37,8 @@ services:
     depends_on:
        - todo-server
     volumes:
-      - '/src'
-      - '/node_modules'
+      - './todo-client:/app'
+      - '/app/node_modules'
     ports:
       - 3001:3000
     environment:
