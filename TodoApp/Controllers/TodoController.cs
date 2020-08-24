@@ -7,59 +7,105 @@ namespace TodoApp.Controllers
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     [Produces("application/json")]
-    [Route("api/[Controller]")]
+    [Route("api/[Controller]/[Action]")]
     public class TodosController : Controller
     {
-        private readonly ITodoRepository _repo;
-        public TodosController(ITodoRepository repo)
+        private readonly ITodoRepository _todoRepository;
+        private readonly ITodoListRepository _todoListRepository;
+        public TodosController(ITodoRepository todoRepository, ITodoListRepository todoListRepository)
         {
-            _repo = repo;
+            _todoListRepository = todoListRepository;
+            _todoRepository = todoRepository;
         }
-        // GET api/todos
+        // GET api/todos/GetTodoLists
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Todo>>> Get()
+        public async Task<ActionResult<IEnumerable<TodoList>>> GetTodoLists()
         {
-            return new ObjectResult(await _repo.GetAllTodos());
+            var result = await _todoListRepository.GetAllTodoLists();
+            return new ObjectResult(result);
         }
-        // GET api/todos/1
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Todo>> Get(long id)
-        {
-            var todo = await _repo.GetTodo(id);
-            if (todo == null)
-                return new NotFoundResult();
 
-            return new ObjectResult(todo);
-        }
-        // POST api/todos
+
+        // POST api/todos/SaveTodoList
         [HttpPost]
-        public async Task<ActionResult<Todo>> Post([FromBody] Todo todo)
+        public async Task<ActionResult<TodoList>> SaveTodoList([FromBody] TodoList todoList)
         {
-            todo.Id = await _repo.GetNextId();
-            await _repo.Create(todo);
-            return new OkObjectResult(todo);
+            todoList.Id = await _todoListRepository.GetNextId();
+            await _todoListRepository.Create(todoList);
+            return new OkObjectResult(todoList);
         }
-        // PUT api/todos/1
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Todo>> Put(long id, [FromBody] Todo todo)
+
+        // DELETE api/todos/DeleteTodoList
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTodoList(long id)
         {
-            var todoFromDb = await _repo.GetTodo(id);
-            if (todoFromDb == null)
-                return new NotFoundResult();
-            todo.Id = todoFromDb.Id;
-            todo.InternalId = todoFromDb.InternalId;
-            await _repo.Update(todo);
-            return new OkObjectResult(todo);
-        }
-        // DELETE api/todos/1
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
-        {
-            var post = await _repo.GetTodo(id);
+            var post = await _todoListRepository.GetTodoList(id);
             if (post == null)
                 return new NotFoundResult();
-            await _repo.Delete(id);
+            await _todoListRepository.Delete(id);
             return new OkResult();
         }
+
+        // GET api/todos/GetTodos
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Todo>>> GetTodos(long todoListId)
+        {
+            return new ObjectResult(await _todoRepository.GetAllTodosForTodoListId(todoListId));
+        }
+
+
+        // POST api/todos/SaveTodo
+        [HttpPost]
+        public async Task<ActionResult<TodoList>> SaveTodo([FromBody] Todo todo)
+        {
+            todo.Id = await _todoRepository.GetNextId();
+            await _todoRepository.Create(todo);
+            return new OkObjectResult(todo);
+        }
+
+        // DELETE api/todos/DeleteTodo
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTodo(long id)
+        {
+            var post = await _todoRepository.GetTodo(id);
+            if (post == null)
+                return new NotFoundResult();
+            await _todoRepository.Delete(id);
+            return new OkResult();
+        }
+        [HttpPut]
+        public async Task<ActionResult<Todo>> UpdateTodo([FromBody] Todo todo)
+        {
+            var todoFromDb = await _todoRepository.GetTodo(todo.Id);
+            if (todoFromDb == null)
+                return new NotFoundResult();
+
+            todo.InternalId = todoFromDb.InternalId;
+            await _todoRepository.Update(todo);
+            return new OkObjectResult(todo);
+        }
+
+        //// GET api/todos/1
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<TodoList>> Get(long id)
+        //{
+        //    var todo = await _todoListRepository.GetTodoList(id);
+        //    if (todo == null)
+        //        return new NotFoundResult();
+
+        //    return new ObjectResult(todo);
+        //}
+        // PUT api/todos/1
+
+        //// DELETE api/todos/1
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(long id)
+        //{
+        //    var post = await _todoListRepository.GetTodoList(id);
+        //    if (post == null)
+        //        return new NotFoundResult();
+        //    await _todoListRepository.Delete(id);
+        //    return new OkResult();
+        //}
     }
 }

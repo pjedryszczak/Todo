@@ -23,9 +23,12 @@ namespace TodoApp
         {
             var config = new ServerConfig();
             Configuration.Bind(config);
-            var todoContext = new TodoContext(config.MongoDB);
+            var dbContext = new DbContext(config.MongoDB);
 
-            services.AddSingleton<ITodoRepository>(new TodoRepository(todoContext));
+            services.AddCors();
+
+            services.AddSingleton<ITodoRepository>(new TodoRepository(dbContext));
+            services.AddSingleton<ITodoListRepository>(new TodoListRepository(dbContext));
 
             services.AddSwaggerGen(c => 
             {
@@ -52,6 +55,12 @@ namespace TodoApp
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
             app.UseHttpsRedirection();
 

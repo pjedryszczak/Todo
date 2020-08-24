@@ -7,16 +7,17 @@ namespace TodoApp.Models
     using System.Linq;
     public class TodoRepository : ITodoRepository
     {
-        private readonly ITodoContext _context;
-        public TodoRepository(ITodoContext context)
+        private readonly IDbContext _context;
+        public TodoRepository(IDbContext context)
         {
             _context = context;
         }
-        public async Task<IEnumerable<Todo>> GetAllTodos()
+        public async Task<IEnumerable<Todo>> GetAllTodosForTodoListId(long id)
         {
+            FilterDefinition<Todo> filter = Builders<Todo>.Filter.Eq(m => m.TodoListId, id);
             return await _context
                             .Todos
-                            .Find(_ => true)
+                            .Find(filter)
                             .ToListAsync();
         }
         public Task<Todo> GetTodo(long id)

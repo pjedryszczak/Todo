@@ -5,7 +5,7 @@
     public interface ITodoRepository
     {
         // api/[GET]
-        Task<IEnumerable<Todo>> GetAllTodos();
+        Task<IEnumerable<Todo>> GetAllTodosForTodoListId(long id);
         // api/1/[GET]
         Task<Todo> GetTodo(long id);
         // api/[POST]
