@@ -1,7 +1,7 @@
 import { fork, put, all, takeEvery, call } from 'redux-saga/effects';
 import * as types from './actionTypes';
 import axios from 'axios'
-import { TodoList, Todo } from '../models';
+import { TodoList, Todo, LoginPayload, User, RegisterPayload } from '../models';
 
 //#region TodoList
 function* getTodoLists(action: { type: string }){
@@ -182,6 +182,65 @@ function* watchForUpdateTodo() {
 }
 //#endregion
 
+//#region Log
+function* login(action: { type: string, payload: LoginPayload }) {
+    const model = action.payload;
+    const path: string = 'api/Users/Authenticate';
+    try {
+
+        const response = yield call(() => axios.post(path, model));
+    
+        if(response.status === 200) {
+            var user = response.data as User;
+            yield put({ type: types.LOGIN_USER_SUCCESS, user });
+        }
+        else if(response.status === 401){
+            yield put({ type: types.LOG_OUT });
+        }
+        else{
+            yield put({ type: types.LOGIN_USER_FAIL, payload: response.data });
+        }
+    } catch (error) {
+        let errors = error.response.data as Array<string>
+        yield put({ type: types.LOGIN_USER_FAIL, payload: errors});
+    }
+}
+function* watchForLogin() {
+    yield takeEvery(types.LOGIN_USER, login);
+}
+function* logout(action: { type: string }) {
+    yield put({ type: types.LOG_OUT_SUCCESS });
+}
+function* watchForLogout() {
+    yield takeEvery(types.LOG_OUT, logout);
+}
+function* register(action: { type: string, payload: RegisterPayload }) {
+    const model = action.payload;
+    const path: string = 'api/Users/Register';
+    try {
+        const response = yield call(() => axios.post(path, model));
+    
+        if(response.status === 200) {
+            var user = response.data as User;
+            yield put({ type: types.REGISTER_USER_SUCCESS, user });
+        }
+        else if(response.status === 401){
+            yield put({ type: types.LOG_OUT });
+        }
+        else{
+            yield put({ type: types.REGISTER_USER_FAIL, payload: response.data });
+        }
+    } catch (error) {
+        let errors = error.response.data as Array<string>
+        yield put({ type: types.REGISTER_USER_FAIL, payload: errors});
+    }
+}
+
+function* watchForRegister() {
+    yield takeEvery(types.REGISTER_USER, register);
+}
+//#endregion
+
 export default function* sagas(): any {
     yield all([
         fork(watchForGetTodoLists),
@@ -190,6 +249,9 @@ export default function* sagas(): any {
         fork(watchForGetTodos),
         fork(watchForSaveTodo),
         fork(watchForDeleteTodo),
-        fork(watchForUpdateTodo)
+        fork(watchForUpdateTodo),
+        fork(watchForLogin),
+        fork(watchForLogout),
+        fork(watchForRegister)
     ])
 }

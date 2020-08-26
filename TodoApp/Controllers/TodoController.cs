@@ -6,6 +6,9 @@ namespace TodoApp.Controllers
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Authorization;
+
+    [Authorize]
     [Produces("application/json")]
     [Route("api/[Controller]/[Action]")]
     public class TodosController : Controller
@@ -42,7 +45,15 @@ namespace TodoApp.Controllers
             var post = await _todoListRepository.GetTodoList(id);
             if (post == null)
                 return new NotFoundResult();
-            await _todoListRepository.Delete(id);
+
+            var todosToDelete = await _todoRepository.GetAllTodosForTodoListId(id);
+            foreach (var todo in todosToDelete)
+            {
+                await _todoRepository.Delete(todo.Id);
+            }
+
+            await _todoListRepository.Delete(id);            
+
             return new OkResult();
         }
 
@@ -84,28 +95,5 @@ namespace TodoApp.Controllers
             await _todoRepository.Update(todo);
             return new OkObjectResult(todo);
         }
-
-        //// GET api/todos/1
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<TodoList>> Get(long id)
-        //{
-        //    var todo = await _todoListRepository.GetTodoList(id);
-        //    if (todo == null)
-        //        return new NotFoundResult();
-
-        //    return new ObjectResult(todo);
-        //}
-        // PUT api/todos/1
-
-        //// DELETE api/todos/1
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(long id)
-        //{
-        //    var post = await _todoListRepository.GetTodoList(id);
-        //    if (post == null)
-        //        return new NotFoundResult();
-        //    await _todoListRepository.Delete(id);
-        //    return new OkResult();
-        //}
     }
 }

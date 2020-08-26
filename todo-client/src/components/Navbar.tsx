@@ -1,15 +1,30 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-
-class Navbar extends Component {
+import { BiBookBookmark } from 'react-icons/bi'
+import { logout } from '../store/actions';
+import { TodoAppState } from '../store/reducer';
+import { User } from '../models';
+import { connect } from 'react-redux';
+interface DispatchProps {
+  logout: typeof logout
+}
+interface StoreState {
+  loggedIn: boolean,
+  user?: User
+}
+type Props = DispatchProps & StoreState;
+class Navbar extends Component<Props> {
+  logout = () => {    
+    this.props.logout();
+  }
         render(){
+          
       return (
-        <nav className="nav-wrapper red darken-3">
+        <nav className="nav-wrapper blue darken-3">
             <div className="cointainer">
-                <a href="/" className="brand-logo" style={{inlineSize: "fit-content"}}>Todo App</a>
+                <a href="/" className="brand-logo" ><BiBookBookmark/> Todo App</a>
                 <ul className="right">
-                    <li><NavLink to="/">Home</NavLink></li>
-                    <li><NavLink to="/logout">Log out</NavLink></li>
+                    <li><NavLink to="/" onClick={this.logout}>Log out</NavLink></li>
                 </ul>
             </div>
         </nav>
@@ -17,5 +32,17 @@ class Navbar extends Component {
     }
     
   }
-  
-  export default Navbar;
+  function mapStateToProps(state: TodoAppState, props: any){
+    return {
+        loggedId: state.loggedId,
+        user: state.user
+    }
+}
+  const container = connect(
+    mapStateToProps,
+    {
+    logout
+  }
+  )(Navbar)
+
+export default container;

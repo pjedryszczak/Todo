@@ -8,7 +8,9 @@ import { connect } from 'react-redux';
 import {saveTodo, saveTodoList, deleteTodo, deleteTodoList, getTodoLists, getTodosForList, updateTodo, clearTodos} from './../store/actions'
 
 interface LocalState {
-    selectedTodoList: TodoList
+    selectedTodoList?: TodoList,
+    todoListLocal: Array<TodoList>,
+    todosForSelectedTodoListLocal: Array<Todo>
 }
 
 interface StoreState {
@@ -32,33 +34,24 @@ interface ComponentProps {}
 type Props = StoreState & LocalState & DispatchProps & ComponentProps;
 class Home extends Component<Props, LocalState> {
   state: LocalState = {
-      selectedTodoList: {
-          title: '',
-          userId: 0
-      }
+      todoListLocal: [],
+      todosForSelectedTodoListLocal: []
   }
     componentDidMount(){
         if(!this.props.todoLists || !(this.props.todoLists.length > 0)){
             this.props.getTodoLists()
         }    
+        this.setState({
+
+        })
     }
-    componentDidUpdate(){
-        if(this.state.selectedTodoList.id !== undefined){
-            let check = this.props.todoLists.filter((todoList: TodoList) => {
-                return todoList.id === this.state.selectedTodoList.id;
-            });
-            if(!check){
-                this.setState({
-                    selectedTodoList: {
-                        title: '',
-                        userId: 0,
-                        id: undefined
-                    }
-                });
-                this.props.clearTodos();
-            }
-        }    
-    }
+    static getDerivedStateFromProps(props: StoreState, state: LocalState) {
+        
+            return {
+                todoListLocal: props.todoLists,
+                todosForSelectedTodoListLocal: props.todosForSelectedTodoList,
+            };          
+      }
   
 
   handleSelectTodoList = (todoList: TodoList) => {    
@@ -68,6 +61,14 @@ class Home extends Component<Props, LocalState> {
     this.props.getTodosForList(todoList.id ?? 0)
   }
   deleteTodoList = (todoList: TodoList) => {
+
+    if(todoList.id === this.state.selectedTodoList?.id){
+        this.setState({
+            selectedTodoList: undefined
+        });
+        this.props.clearTodos();
+    }
+
     this.props.deleteTodoList(todoList);
   }
   addTodoList = (content: string) => {
@@ -83,7 +84,7 @@ class Home extends Component<Props, LocalState> {
   addTodo = (content: string) => {
     const todo: Todo ={
         content: content,
-        todoListId: this.state.selectedTodoList.id ?? 0,
+        todoListId: this.state.selectedTodoList?.id ?? 0,
         checked: false
     };
     this.props.saveTodo(todo);
@@ -98,15 +99,15 @@ class Home extends Component<Props, LocalState> {
     return (
         <>
             <h1 className="center blue-text"> Todo's</h1>
-            <TodoLists todoLists={this.props.todoLists} deleteTodoList={this.deleteTodoList} handleSelect={this.handleSelectTodoList}/>     
+            <TodoLists todoLists={this.state.todoListLocal} deleteTodoList={this.deleteTodoList} handleSelect={this.handleSelectTodoList}/>     
             <AddComponent addFunc={this.addTodoList} placeholder={"Add new Todo list:"}/>
             {
-                this.state.selectedTodoList.id && this.state.selectedTodoList.id !== 0 && this.props.todosForSelectedTodoList.length && this.props.todosForSelectedTodoList.length > 0 ? 
-                <Todos todos={this.props.todosForSelectedTodoList } deleteTodo={this.deleteTodo} checkTodo={this.checkTodo}/> :
+                this.state.selectedTodoList?.id && this.state.selectedTodoList.id !== 0 && this.state.todosForSelectedTodoListLocal.length && this.state.todosForSelectedTodoListLocal.length > 0 ? 
+                <Todos todos={this.state.todosForSelectedTodoListLocal } deleteTodo={this.deleteTodo} checkTodo={this.checkTodo}/> :
                 <></>
             } 
             {
-                this.state.selectedTodoList.id && this.state.selectedTodoList.id !== 0 ?
+                this.state.selectedTodoList?.id && this.state.selectedTodoList.id !== 0 ?
                 <AddComponent addFunc={this.addTodo} placeholder={"Add new Todo:"}/> :
                 <></>
             }           

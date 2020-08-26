@@ -9,5 +9,19 @@ export interface TodoList {
         userId: number,
         title: string
     }   
+export interface LoginPayload {
+        username: string,
+        password: string
+    } 
+export interface RegisterPayload {
+        username: string,
+        password: string,
+        firstName: string
+    }
+export interface User {
+        username: string,
+        userId: number,
+        name: string
+    }   
 
  

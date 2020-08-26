@@ -1,0 +1,83 @@
+nav .brand-logo{
+    margin-left: 100px;
+}
+@media(max-width: 992px) {
+    
+}
+#todoList {
+    display: inline-flex;
+    width: -webkit-fill-available;
+}
+#todo {
+    display: inline-flex;
+    width: -webkit-fill-available;
+}
+#delete-right {
+    position: relative;
+    float: right;
+    z-index: 5;
+    float: right;    
+} 
+
+ .collection .collection-item{
+    background-color: #2195f3dc;
+    width: -webkit-fill-available;
+    cursor: pointer;    
+    text-align-last: center;
+    margin-top: 2px;
+}
+#todoList > li#active.collection-item  {
+    background-color: #8bdfb0;;
+}
+#todoList > li.collection-item:hover{
+    background-color: #1565C0;
+}
+
+#todo > li.collection-item {
+    background-color: #2195f37a;;
+}
+#todo > li.collection-item:hover{
+    background-color: #1565C0;
+}
+.collection .collection-item div{
+    width: 93%;    
+    float: left;
+    color: white;
+    font-size: x-large;
+} 
+
+.collection .collection-item div > span{
+    vertical-align: -webkit-baseline-middle;
+    margin-left: 7%;
+    
+} 
+
+@media(max-width: 992px) {
+    nav .brand-logo{
+        margin-left: 0px;
+    }
+    .collection .collection-item div{
+        width: auto;
+    }
+    .collection .collection-item div > span{
+        vertical-align: -webkit-baseline-middle;
+        margin-left: auto;        
+    }
+}@media(max-width: 1694px) {
+    nav .brand-logo{
+        margin-left: 0px;
+    }
+    .collection .collection-item div{
+        width: 86%;
+    }
+    .collection .collection-item div > span{
+        vertical-align: -webkit-baseline-middle;
+        margin-left: 14%;        
+    }
+}
+
+
+    
+
+
+
