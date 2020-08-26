@@ -1,28 +1,31 @@
 import React, { Component } from 'react';
-import { TodoList, Todo } from '../models';
+import { TodoList, Todo, User, NumericPayload, TodoListPayload, TodoPayload } from '../models';
 import  TodoLists  from './TodoLists';
 import AddComponent from './AddComponent';
 import { Todos } from './Todos';
 import { TodoAppState } from '../store/reducer';
 import { connect } from 'react-redux';
-import {saveTodo, saveTodoList, deleteTodo, deleteTodoList, getTodoLists, getTodosForList, updateTodo, clearTodos} from './../store/actions'
+import {saveTodo, saveTodoList, deleteTodo, deleteTodoList, getTodoListsForUser, getTodosForList, updateTodo, clearTodos} from './../store/actions'
+import { RouteComponentProps } from 'react-router-dom';
 
 interface LocalState {
     selectedTodoList?: TodoList,
     todoListLocal: Array<TodoList>,
-    todosForSelectedTodoListLocal: Array<Todo>
+    todosForSelectedTodoListLocal: Array<Todo>,
+    user: User
 }
 
 interface StoreState {
     todoLists: Array<TodoList>,
-    todosForSelectedTodoList: Array<Todo>
+    todosForSelectedTodoList: Array<Todo>,
+    user: User
 }
 interface DispatchProps {
     saveTodo: typeof saveTodo,
     saveTodoList: typeof saveTodoList,
     deleteTodo: typeof deleteTodo,
     deleteTodoList: typeof deleteTodoList,
-    getTodoLists: typeof getTodoLists,
+    getTodoListsForUser: typeof getTodoListsForUser,
     getTodosForList: typeof getTodosForList,
     updateTodo: typeof updateTodo,
     clearTodos: typeof clearTodos
@@ -31,15 +34,20 @@ interface DispatchProps {
 
 interface ComponentProps {}
 
-type Props = StoreState & LocalState & DispatchProps & ComponentProps;
+type Props = StoreState & LocalState & DispatchProps & ComponentProps & RouteComponentProps;
 class Home extends Component<Props, LocalState> {
   state: LocalState = {
       todoListLocal: [],
-      todosForSelectedTodoListLocal: []
+      todosForSelectedTodoListLocal: [],
+      user: this.props.user
   }
     componentDidMount(){
-        if(!this.props.todoLists || !(this.props.todoLists.length > 0)){
-            this.props.getTodoLists()
+        if((!this.props.todoLists || !(this.props.todoLists.length > 0)) && this.state.user.id !== 0){
+            const payload: NumericPayload = {
+                history: this.props.history,
+                id:this.state.user.id
+            };
+            this.props.getTodoListsForUser(payload)
         }    
         this.setState({
 
@@ -50,6 +58,7 @@ class Home extends Component<Props, LocalState> {
             return {
                 todoListLocal: props.todoLists,
                 todosForSelectedTodoListLocal: props.todosForSelectedTodoList,
+                userLocal: props.user
             };          
       }
   
@@ -58,7 +67,11 @@ class Home extends Component<Props, LocalState> {
     this.setState({
         selectedTodoList: todoList
     });
-    this.props.getTodosForList(todoList.id ?? 0)
+    const payload: NumericPayload = {
+        history: this.props.history,
+        id: todoList.id ?? 0
+    };
+    this.props.getTodosForList(payload)
   }
   deleteTodoList = (todoList: TodoList) => {
 
@@ -68,18 +81,29 @@ class Home extends Component<Props, LocalState> {
         });
         this.props.clearTodos();
     }
-
-    this.props.deleteTodoList(todoList);
+    const payload: TodoListPayload = {
+        history: this.props.history,
+        todoList
+    };
+    this.props.deleteTodoList(payload);
   }
   addTodoList = (content: string) => {
     const todoList: TodoList ={
         title: content,
-        userId: 0
+        userId: this.state.user.id
     };
-    this.props.saveTodoList(todoList);
+    const payload: TodoListPayload = {
+        history: this.props.history,
+        todoList
+    };
+    this.props.saveTodoList(payload);
   }
   deleteTodo = (todo: Todo) => {
-    this.props.deleteTodo(todo);
+    const payload: TodoPayload = {
+        history: this.props.history,
+        todo
+    };
+    this.props.deleteTodo(payload);
   }
   addTodo = (content: string) => {
     const todo: Todo ={
@@ -87,11 +111,19 @@ class Home extends Component<Props, LocalState> {
         todoListId: this.state.selectedTodoList?.id ?? 0,
         checked: false
     };
-    this.props.saveTodo(todo);
+    const payload: TodoPayload = {
+        history: this.props.history,
+        todo
+    };
+    this.props.saveTodo(payload);
   }
   checkTodo = (todo: Todo) => {   
       todo.checked = !todo.checked; 
-    this.props.updateTodo(todo);
+      const payload: TodoPayload = {
+        history: this.props.history,
+        todo
+    };
+    this.props.updateTodo(payload);
   }
 
   
@@ -121,7 +153,8 @@ class Home extends Component<Props, LocalState> {
 function mapStateToProps(state: TodoAppState, props: any){
     return {
         todoLists: state.todoLists,
-        todosForSelectedTodoList: state.todosForSelectedTodoList
+        todosForSelectedTodoList: state.todosForSelectedTodoList,
+        user: state.user
     }
 }
 const container = connect(
@@ -131,7 +164,7 @@ const container = connect(
     saveTodoList,
     deleteTodo,
     deleteTodoList,
-    getTodoLists,
+    getTodoListsForUser,
     getTodosForList,
     updateTodo,
     clearTodos

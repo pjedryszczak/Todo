@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
     public interface ITodoListRepository
     {
-        Task<IEnumerable<TodoList>> GetAllTodoLists();        
+        Task<IEnumerable<TodoList>> GetAllTodoListsForUser(long id);        
         Task<TodoList> GetTodoList(long id);        
         Task Create(TodoList todo);        
         Task<bool> Update(TodoList todo);        

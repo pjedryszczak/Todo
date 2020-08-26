@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import {  RouteComponentProps } from 'react-router-dom';
 import { BiBookBookmark } from 'react-icons/bi'
 import { logout } from '../store/actions';
 import { TodoAppState } from '../store/reducer';
@@ -10,21 +10,42 @@ interface DispatchProps {
 }
 interface StoreState {
   loggedIn: boolean,
-  user?: User
+  user: User
 }
-type Props = DispatchProps & StoreState;
-class Navbar extends Component<Props> {
-  logout = () => {    
-    this.props.logout();
+interface LocalState {
+  loggedIn: boolean,
+  user: User
+}
+type Props = DispatchProps & StoreState & RouteComponentProps;
+class Navbar extends Component<Props, LocalState> {
+  state: LocalState={
+    loggedIn: false,
+    user: this.props.user
   }
-        render(){
-          
+  static getDerivedStateFromProps(props: StoreState, state: LocalState) {
+        
+    return {
+      loggedIn: props.loggedIn,
+      user: props.user
+    };          
+}
+  logout = () => {    
+    this.props.logout(this.props.history);
+  }
+      render(){      
+      
+      
+      
+              
       return (
         <nav className="nav-wrapper blue darken-3">
             <div className="cointainer">
                 <a href="/" className="brand-logo" ><BiBookBookmark/> Todo App</a>
+                <ul className="right">                     
+                    {this.props.loggedIn ? <a href="/" onClick={(e) => this.logout()}>Log Out</a> : <></>}
+                </ul>
                 <ul className="right">
-                    <li><NavLink to="/" onClick={this.logout}>Log out</NavLink></li>
+                {this.props.loggedIn ? <span>Hello, {this.props.user.firstName} :)</span> : <></>}
                 </ul>
             </div>
         </nav>
@@ -34,15 +55,15 @@ class Navbar extends Component<Props> {
   }
   function mapStateToProps(state: TodoAppState, props: any){
     return {
-        loggedId: state.loggedId,
-        user: state.user
-    }
+      loggedIn: state.loggedIn,
+      user: state.user
+     }
 }
   const container = connect(
     mapStateToProps,
     {
     logout
-  }
+    }
   )(Navbar)
 
 export default container;

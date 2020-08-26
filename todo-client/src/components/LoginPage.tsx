@@ -1,16 +1,18 @@
 import React, { ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { login, logout } from './../store/actions';
-import { User, LoginPayload } from '../models';
+import { login, logout, clearUser } from './../store/actions';
+import { User, LoginModel, LoginPayload } from '../models';
 import { TodoAppState } from '../store/reducer';
+import { RouteComponentProps } from 'react-router';
 
 interface DispatchProps {
     login: typeof login,
-    logout: typeof logout
+    logout: typeof logout,
+    clearUser: typeof clearUser
 }
 interface StoreState {
-    user?: User,
+    user: User,
     loggedIn: boolean,
     loading: boolean
 }
@@ -19,26 +21,27 @@ interface LocalState {
     [key: string]: any;
     username: string,
     password: string,
-    submitted: boolean
+    submitted: boolean,
+    pushHome: boolean
 }
 
-type Props = DispatchProps & StoreState & LocalState;
+type Props = DispatchProps & StoreState & LocalState & RouteComponentProps;
 class LoginPage extends React.Component<Props, LocalState> {
     constructor(props:any) {
         super(props);
 
-        // reset login status
-        this.props.logout();
+        this.props.clearUser();
 
         this.state = {
             username: '',
             password: '',
-            submitted: false
+            submitted: false,
+            pushHome: false
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
+    }    
 
     handleChange(e: ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target;
@@ -50,12 +53,17 @@ class LoginPage extends React.Component<Props, LocalState> {
 
         this.setState({ submitted: true });
         const { username, password } = this.state;
+        const { history } = this.props;
         if (username && password) {
-            const payload: LoginPayload ={
+            const loginPayload: LoginModel ={
                 username,
-                password
+                password,
             }
-            this.props.login(payload);
+            const sagaPayload: LoginPayload = {
+                payload: loginPayload,                
+                history
+            }
+            this.props.login(sagaPayload);
         }
     }
 
@@ -84,7 +92,7 @@ class LoginPage extends React.Component<Props, LocalState> {
                         <button className="waves-effect waves-light blue darken-1 btn">Login</button>
                         {loading &&
                             
-                            <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                           <>ŁADOWANIE</>
                         }
                         <Link to="/register" className="waves-effect waves-light green darken-1 btn">Register</Link>
                     </div>
@@ -102,7 +110,8 @@ const container = connect(
     mapStateToProps,
     {
     login,
-    logout
+    logout,
+    clearUser
 }
 )(LoginPage)
 

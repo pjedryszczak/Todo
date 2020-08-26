@@ -12,11 +12,12 @@ namespace TodoApp.Models
         {
             _context = context;
         }
-        public async Task<IEnumerable<TodoList>> GetAllTodoLists()
+        public async Task<IEnumerable<TodoList>> GetAllTodoListsForUser(long id)
         {
+            FilterDefinition<TodoList> filter = Builders<TodoList>.Filter.Eq(m => m.UserId, id);
             return await _context
                             .TodoLists
-                            .Find(_ => true)
+                            .Find(filter)
                             .ToListAsync();
         }
         public Task<TodoList> GetTodoList(long id)

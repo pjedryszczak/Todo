@@ -1,8 +1,8 @@
 import React, { ChangeEvent, FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { register } from './../store/actions';
-import { User, RegisterPayload } from '../models';
+import { User, RegisterPayload, RegisterModel } from '../models';
 import { TodoAppState } from '../store/reducer';
 
 
@@ -10,7 +10,7 @@ interface DispatchProps {
     register: typeof register
 }
 interface StoreState {
-    user?: User,
+    user: User,
     loggedIn: boolean,
     loading: boolean
 }
@@ -23,7 +23,7 @@ interface LocalState {
     submitted: boolean
 }
 
-type Props = DispatchProps & StoreState & LocalState;
+type Props = DispatchProps & StoreState & LocalState & RouteComponentProps;
 class LoginPage extends React.Component<Props, LocalState> {
     constructor(props:any) {
         super(props);
@@ -49,11 +49,16 @@ class LoginPage extends React.Component<Props, LocalState> {
 
         this.setState({ submitted: true });
         const { username, password, firstName } = this.state;
+        const {history} = this.props;
         if (username && password) {
-            const payload: RegisterPayload ={
+            const registerModel: RegisterModel ={
                 username,
                 password,
-                firstName
+                firstName,
+            }
+            const payload: RegisterPayload ={
+                payload: registerModel,
+                history
             }
             this.props.register(payload);
         }
@@ -90,8 +95,7 @@ class LoginPage extends React.Component<Props, LocalState> {
                     <div className="form-group">
                         <button className="waves-effect waves-light blue darken-1 btn">Register</button>
                         {loading &&
-                            
-                            <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                            <>ŁADOWANIE</>
                         }
                         <Link to="/" className="waves-effect waves-light green darken-1 btn">Cancel</Link>
                     </div>

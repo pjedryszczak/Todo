@@ -4,16 +4,23 @@ export interface TodoAppState {
     todoLists: TodoList[],
     todosForSelectedTodoList: Todo[],
     loading: boolean,
-    errors: Array<string>,
-    loggedId: boolean,
-    user?: User
+    error: string,
+    loggedIn: boolean,
+    user: User
+}
+export const initialUser: User = {
+    id: 0,
+    firstName: '',
+    username: '',
+    token: ''
 }
 export const initialState: TodoAppState = {
 todoLists: [],
 loading: false,
-errors: [],
+error: '',
 todosForSelectedTodoList: [],
-loggedId: false
+loggedIn: false,
+user: initialUser
 }
 export function reducer(state = initialState, action: any) : TodoAppState {
     switch(action.type){
@@ -23,13 +30,13 @@ export function reducer(state = initialState, action: any) : TodoAppState {
                 ...state,
                 todoLists: action.payload,
                 loading: false,
-                errors: []
+                error: ''
             };
         case types.GET_TODOLISTS_FAIL:
             return {
                 ...state,
                 loading: false,
-                errors: action.payload ?? []
+                error: action.payload ?? ''
             };
         case types.GET_TODOLISTS_LOADING:
             return {
@@ -41,13 +48,13 @@ export function reducer(state = initialState, action: any) : TodoAppState {
                 return {
                     ...state,
                     loading: false,
-                    errors: []
+                    error: '[]'
                 };
             case types.SAVE_TODOLIST_FAIL:
                 return {
                     ...state,
                     loading: false,
-                    errors: action.payload ?? []
+                    error: action.payload ?? '[]'
                 };
             case types.SAVE_TODOLIST_LOADING:
                 return {
@@ -59,13 +66,13 @@ export function reducer(state = initialState, action: any) : TodoAppState {
                 return {
                     ...state,
                     loading: false,
-                    errors: []
+                    error: ''
                 };
             case types.DELETE_TODOLIST_FAIL:
                 return {
                     ...state,
                     loading: false,
-                    errors: action.payload ?? []
+                    error: action.payload ?? ''
                 };
             case types.DELETE_TODOLIST_LOADING:
                 return {
@@ -79,13 +86,13 @@ export function reducer(state = initialState, action: any) : TodoAppState {
                     ...state,
                     todosForSelectedTodoList: action.payload,
                     loading: false,
-                    errors: []
+                    error: ''
                 };
             case types.GET_TODOS_FOR_LIST_FAIL:
                 return {
                     ...state,
                     loading: false,
-                    errors: action.payload ?? []
+                    error: action.payload ?? ''
                 };
             case types.GET_TODOS_FOR_LIST_LOADING:
                 return {
@@ -97,13 +104,13 @@ export function reducer(state = initialState, action: any) : TodoAppState {
                 return {
                     ...state,
                     loading: false,
-                    errors: []
+                    error: ''
                 };
             case types.SAVE_TODO_FAIL:
                 return {
                     ...state,
                     loading: false,
-                    errors: action.payload ?? []
+                    error: action.payload ?? ''
                 };
             case types.SAVE_TODO_LOADING:
                 return {
@@ -115,13 +122,13 @@ export function reducer(state = initialState, action: any) : TodoAppState {
                 return {
                     ...state,
                     loading: false,
-                    errors: []
+                    error: ''
                 };
             case types.DELETE_TODO_FAIL:
                 return {
                     ...state,
                     loading: false,
-                    errors: action.payload ?? []
+                    error: action.payload ?? ''
                 };
             case types.DELETE_TODO_LOADING:
                 return {
@@ -133,13 +140,13 @@ export function reducer(state = initialState, action: any) : TodoAppState {
                     return {
                         ...state,
                         loading: false,
-                        errors: []
+                        error: ''
                     };
                 case types.UPDATE_TODO_FAIL:
                     return {
                         ...state,
                         loading: false,
-                        errors: action.payload ?? []
+                        error: action.payload ?? ''
                     };
                 case types.UPDATE_TODO_LOADING:
                     return {
@@ -157,18 +164,18 @@ export function reducer(state = initialState, action: any) : TodoAppState {
         case types.LOGIN_USER_SUCCESS:
             return {
                 ...state,
-                loggedId: true,
+                loggedIn: true,
                 loading: false,
-                errors: [],
+                error: '',
                 user: action.payload
             };
         case types.LOGIN_USER_FAIL:
             return {
                 ...state,
                 loading: false,
-                errors: action.payload ?? [],
-                loggedId: false,
-                user: undefined
+                error: action.payload ?? '',
+                loggedIn: false,
+                user: initialUser
             };
         case types.LOGIN_USER_LOADING:
             return {
@@ -178,9 +185,15 @@ export function reducer(state = initialState, action: any) : TodoAppState {
         case types.LOG_OUT_SUCCESS:
             return {
                 ...state,
-                user: undefined,
-                loggedId: false
-            };                               
+                user: initialUser,
+                loggedIn: false
+            };
+        case types.CLEAR_USER:
+            return {
+                ...state,
+                user: initialUser,
+                loggedIn: false
+            };                                   
         //#endregion
         //#region Register
         case types.REGISTER_USER_SUCCESS:
@@ -201,5 +214,5 @@ export function reducer(state = initialState, action: any) : TodoAppState {
         //#endregion
             default:
             return state;    
-    }
-}
+    };
+};

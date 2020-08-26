@@ -6,8 +6,11 @@ import * as serviceWorker from './serviceWorker';
 import configureStore from './store/configureStore';
 import {Provider as ReduxProvider } from 'react-redux';
 import { Route, BrowserRouter } from 'react-router-dom';
+import axios from 'axios';
+import { logout } from './store/actions'
 
 const initialState = window.INITIAL_REDUX_STATE;
+
 const store = configureStore(initialState);
 
 const render = (component) => {
@@ -20,7 +23,22 @@ const render = (component) => {
     document.getElementById('root')  
   );
 }
-
+// const{ dispatch } = store;
+// const axiosInstance = axios.create({
+//   headers:{
+//     "X-Requested-With": "XMLHttpRequest"
+//   }
+// }).interceptors.response.use(
+//   response => response,
+//   error => {
+//     const { status } = error.response;
+//     if(status !== 401){
+//       return Promise.reject(error);
+//     }
+//     dispatch(logout());
+//     return Promise.reject(error);
+//   }
+// );
 render(App);
 
 // If you want your app to work offline and load faster, you can change

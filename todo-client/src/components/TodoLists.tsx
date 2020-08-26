@@ -1,7 +1,5 @@
-import {BsTrash} from "react-icons/bs";
 import React, { Component } from 'react'
-import { TodoList, Todo } from '../models'
-import { Todos } from "./Todos";
+import { TodoList } from '../models'
 
 
 interface ComponentProps{
@@ -35,7 +33,7 @@ handleDelete(todoList: TodoList){
             return(
                 <div id="todoList">
                     <li className="collection-item"  key={todoList.id} id={selectedListId && selectedListId === todoList.id ? "active" : ""}>
-                        <div onClick={(e) => this.handleSelect(todoList)} >
+                        <div onClick={() => this.handleSelect(todoList)} >
                             <span>{todoList.title}</span>
                         </div>
                         <a href="#!" onClick={() => {this.handleDelete(todoList)}} className="waves-effect waves-light red darken-1 btn" id="delete-right">

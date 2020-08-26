@@ -22,9 +22,9 @@ namespace TodoApp.Controllers
         }
         // GET api/todos/GetTodoLists
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoList>>> GetTodoLists()
+        public async Task<ActionResult<IEnumerable<TodoList>>> GetTodoLists(long userId)
         {
-            var result = await _todoListRepository.GetAllTodoLists();
+            var result = await _todoListRepository.GetAllTodoListsForUser(userId);
             return new ObjectResult(result);
         }
 
