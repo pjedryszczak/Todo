@@ -5,6 +5,12 @@ namespace TodoApp.Models
 {
     using MongoDB.Driver;
     using TodoApp;
+    public interface IDbContext
+    {
+        IMongoCollection<TodoList> TodoLists { get; }
+        IMongoCollection<Todo> Todos { get; }
+        IMongoCollection<User> Users { get; }
+    }
     public class DbContext: IDbContext
     {
         private readonly IMongoDatabase _db;
