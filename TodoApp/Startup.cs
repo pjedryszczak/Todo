@@ -88,7 +88,7 @@ namespace TodoApp
             {
                 options.AddPolicy("CorsPolicy", config =>
                 {
-                    config.WithOrigins("http://localhost:1337").SetIsOriginAllowedToAllowWildcardSubdomains();
+                    config.WithOrigins("http://localhost:1337", "http://localhost:3001").SetIsOriginAllowedToAllowWildcardSubdomains();
                     config.AllowAnyHeader();
                     config.AllowAnyOrigin();
                     config.AllowAnyMethod();

@@ -6,8 +6,6 @@ import * as serviceWorker from './serviceWorker';
 import configureStore from './store/configureStore';
 import {Provider as ReduxProvider } from 'react-redux';
 import { Route, BrowserRouter } from 'react-router-dom';
-import axios from 'axios';
-import { logout } from './store/actions'
 
 const initialState = window.INITIAL_REDUX_STATE;
 

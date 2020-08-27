@@ -211,6 +211,11 @@ export function reducer(state = initialState, action: any) : TodoAppState {
                 ...state,
                 loading: true
             };
+        case types.CLEAR_ERROR:
+            return {
+                ...state,
+                error: ''
+            };
         //#endregion
             default:
             return state;    

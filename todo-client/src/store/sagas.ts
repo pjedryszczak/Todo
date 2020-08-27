@@ -1,7 +1,7 @@
 import { fork, put, all, takeEvery, call } from 'redux-saga/effects';
 import * as types from './actionTypes';
 import axios from 'axios'
-import { TodoList, Todo, LoginPayload, User, RegisterPayload, NumericPayload, TodoListPayload, TodoPayload } from '../models';
+import { TodoList, LoginPayload, User, RegisterPayload, NumericPayload, TodoListPayload, TodoPayload } from '../models';
 import { getBaseUrl } from '../helpers';
 
 //#region TodoList

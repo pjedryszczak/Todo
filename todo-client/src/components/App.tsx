@@ -7,36 +7,44 @@ import RegisterPage from './RegisterPage';
 import './App.css'
 import { TodoAppState } from '../store/reducer';
 import { connect } from 'react-redux';
-import { RouteComponentProps, Redirect } from 'react-router';
-import { User } from '../models';
 import { AuthorizedRoute } from './AuthorizedRoute';
+import { clearError } from '../store/actions';
 
 interface StoreState {
-  loggedIn: boolean,
-  user: User,
-  error: string
+  error: string,
+  loggedIn: boolean
+}
+interface DispatchProps {
+  clearError: typeof clearError
 }
 interface LocalState {
   error: string
+  loggedIn: boolean
 }
-type Props = StoreState & LocalState & RouteComponentProps;
+type Props = StoreState & LocalState & DispatchProps;
 
 class App extends Component<Props> { 
-  state = { 
-    error: ''
+  state: LocalState = { 
+    error: '',
+    loggedIn: this.props.loggedIn
   };
 notify = (error: string) => {
   alert(error);
 }
   
 static getDerivedStateFromProps(props: StoreState, state: LocalState) {    
-     return{
+  if(props.error !== state.error){
+    return{
       error: props.error
-    };     
+    };
+  }
+    
+    return null;  
 }
 componentDidUpdate(){
-  if(this.state.error != ''){
+  if(this.state.error !== ''){
     this.notify(this.state.error)
+    this.props.clearError();
   }
 }
   render(){
@@ -56,7 +64,7 @@ componentDidUpdate(){
   }
   
 }
-function mapStateToProps(state: TodoAppState, props: any){
+function mapStateToProps(state: TodoAppState): StoreState{
   return {
       loggedIn: state.loggedIn,
       error: state.error
@@ -64,7 +72,9 @@ function mapStateToProps(state: TodoAppState, props: any){
 }
 const container = connect(
   mapStateToProps,
-  { }
+  { 
+    clearError
+  }
 )(App)
 
 export default container;

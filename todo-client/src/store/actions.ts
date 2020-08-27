@@ -1,5 +1,5 @@
 import * as types from './actionTypes';
-import { TodoList, Todo, LoginPayload, RegisterPayload, NumericPayload, TodoListPayload, TodoPayload } from '../models';
+import { LoginPayload, RegisterPayload, NumericPayload, TodoListPayload, TodoPayload } from '../models';
 
 export function getTodoListsForUser(payload: NumericPayload){
     return { type: types.GET_TODOLISTS, payload };
@@ -35,6 +35,9 @@ export function logout(payload: any){
 }
 export function clearUser(){
     return { type: types.CLEAR_USER };
+}
+export function clearError(){
+    return { type: types.CLEAR_ERROR };
 }
 export function register(payload: RegisterPayload){
     return { type: types.REGISTER_USER, payload };
