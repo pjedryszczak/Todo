@@ -90,7 +90,7 @@ class Home extends Component<Props, LocalState> {
   addTodoList = (content: string) => {
     const todoList: TodoList ={
         title: content,
-        userId: this.state.user.id
+        userId: this.props.user.id
     };
     const payload: TodoListPayload = {
         history: this.props.history,

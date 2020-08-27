@@ -84,7 +84,16 @@ namespace TodoApp
                     ValidateAudience = false
                 };
             });
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", config =>
+                {
+                    config.WithOrigins("http://localhost:1337").SetIsOriginAllowedToAllowWildcardSubdomains();
+                    config.AllowAnyHeader();
+                    config.AllowAnyOrigin();
+                    config.AllowAnyMethod();
+                });
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
@@ -104,10 +113,7 @@ namespace TodoApp
             }
 
             // global cors policy
-            app.UseCors(x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+            app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();

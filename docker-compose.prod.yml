@@ -30,12 +30,12 @@ services:
       MongoDB__Host: mongo
     depends_on:
       - mongo
-
+  
   todo-client:
     container_name: todo-client
     build: 
-      context: .
-      dockerfile: todo-client/Dockerfile.prod
+      context: todo-client/
+      dockerfile: Dockerfile.prod
     restart: always
     depends_on:
       - todo-server

@@ -9,7 +9,6 @@ import { TodoAppState } from '../store/reducer';
 import { connect } from 'react-redux';
 import { RouteComponentProps, Redirect } from 'react-router';
 import { User } from '../models';
-import { toast } from 'react-toastify';
 import { AuthorizedRoute } from './AuthorizedRoute';
 
 interface StoreState {

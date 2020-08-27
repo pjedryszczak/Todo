@@ -2,6 +2,7 @@ import { fork, put, all, takeEvery, call } from 'redux-saga/effects';
 import * as types from './actionTypes';
 import axios from 'axios'
 import { TodoList, Todo, LoginPayload, User, RegisterPayload, NumericPayload, TodoListPayload, TodoPayload } from '../models';
+import { getBaseUrl } from '../helpers';
 
 //#region TodoList
 function* getTodoLists(action: { type: string, payload: NumericPayload }){
@@ -10,12 +11,14 @@ function* getTodoLists(action: { type: string, payload: NumericPayload }){
         const userId = action.payload.id;
         const history = action.payload.history;
         yield put({ type: types.GET_TODOLISTS_LOADING });
-        const path: string = 'api/Todos/GetTodoLists';
+        const base: string = getBaseUrl();
+        const path: string = base + 'api/Todos/GetTodoLists';
         const response = yield call(() => axios.get(path, { params: {
             userId
         },
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'X-Requested-With': 'XMLHttpRequest'
         }}));
 
         if(response.status === 200) {
@@ -42,15 +45,21 @@ function* saveTodoList(action: { type: string, payload: TodoListPayload }){
     try {
         const token: string = localStorage.token ?? '';
         yield put({ type: types.SAVE_TODOLIST_LOADING });        
-        const path: string = 'api/Todos/SaveTodoList';
+        const base: string = getBaseUrl();
+        const path: string = base + 'api/Todos/SaveTodoList';
         const response = yield call(() => axios.post(path, todoList,{
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'X-Requested-With': 'XMLHttpRequest'
             }}));
 
         if(response.status === 200) {
             yield put({ type: types.SAVE_TODOLIST_SUCCESS });
-            yield put({ type: types.GET_TODOLISTS, payload: todoList.id});
+            const payload: NumericPayload ={
+                id: todoList.userId,
+                history
+            }
+            yield put({ type: types.GET_TODOLISTS, payload: payload});
         }
         else if(response.status === 401){
             yield put({ type: types.LOG_OUT, history });
@@ -74,18 +83,24 @@ function* deleteTodoList(action: { type: string, payload: TodoListPayload }){
         const token: string = localStorage.token ?? '';
         yield put({ type: types.DELETE_TODOLIST_LOADING });
         const todoListId = todoList.id;
-        const path: string = 'api/Todos/DeleteTodoList';
+        const base: string = getBaseUrl();
+        const path: string = base + 'api/Todos/DeleteTodoList';
         const response = yield call(() => axios.delete(path, {params: {
             id: todoListId
         },
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'X-Requested-With': 'XMLHttpRequest'
         }
     }));
 
         if(response.status === 200) {
             yield put({ type: types.DELETE_TODOLIST_SUCCESS });
-            yield put({ type: types.GET_TODOLISTS, payload: todoList.userId});
+            const payload: NumericPayload ={
+                id: todoList.userId,
+                history
+            }
+            yield put({ type: types.GET_TODOLISTS, payload: payload});
         }
         else if(response.status === 401){
             yield put({ type: types.LOG_OUT, history });
@@ -112,13 +127,15 @@ function* getTodos(action: { type: string, payload: NumericPayload}){
         const todoListId = action.payload.id;
         const history = action.payload.id;
         yield put({ type: types.GET_TODOS_FOR_LIST_LOADING });
-        const path: string = 'api/Todos/GetTodos';
+        const base: string = getBaseUrl();
+        const path: string = base + 'api/Todos/GetTodos';
         const response = yield call(() => axios.get(path, { params: {
             todoListId
         },
         headers: {
-                'Authorization': `Bearer ${token}`
-            }
+            'Authorization': `Bearer ${token}`,
+            'X-Requested-With': 'XMLHttpRequest'
+        }
           }));
 
         if(response.status === 200) {
@@ -146,10 +163,12 @@ function* saveTodo(action: { type: string, payload: TodoPayload }){
         const token: string = localStorage.token ?? '';
         const { todo, history }= action.payload;
         yield put({ type: types.SAVE_TODO_LOADING });        
-        const path: string = 'api/Todos/SaveTodo';
+        const base: string = getBaseUrl();
+        const path: string = base + 'api/Todos/SaveTodo';
         const response = yield call(() => axios.post(path, todo, {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'X-Requested-With': 'XMLHttpRequest'
             }
           }));
 
@@ -182,13 +201,15 @@ function* deleteTodo(action: { type: string, payload: TodoPayload }){
         const token: string = localStorage.token ?? '';
         const { todo, history }= action.payload;
         yield put({ type: types.DELETE_TODO_LOADING });
-        const path: string = 'api/Todos/DeleteTodo';
+        const base: string = getBaseUrl();
+        const path: string = base + 'api/Todos/DeleteTodo';
         const response = yield call(() => axios.delete(path, { params: {
             id: todo.id ?? 0
         },
         headers: {
-                'Authorization': `Bearer ${token}`
-            }
+            'Authorization': `Bearer ${token}`,
+            'X-Requested-With': 'XMLHttpRequest'
+        }
     }));
 
         if(response.status === 200) {
@@ -220,10 +241,12 @@ function* updateTodo(action: { type: string, payload: TodoPayload }){
         const token: string = localStorage.token ?? '';
         const { todo, history }= action.payload;
         yield put({ type: types.UPDATE_TODO_LOADING });
-        const path: string = 'api/Todos/UpdateTodo';
+        const base: string = getBaseUrl();
+        const path: string = base + 'api/Todos/UpdateTodo';
         const response = yield call(() => axios.put(path, todo,  {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'X-Requested-With': 'XMLHttpRequest'
             }
           }));
 
@@ -255,11 +278,16 @@ function* watchForUpdateTodo() {
 function* login(action: { type: string, payload: LoginPayload }) {
     const model = action.payload.payload;
     const history = action.payload.history;
-    const path: string = 'api/Users/Authenticate';
+    const base: string = getBaseUrl();
+        const path: string = base + 'api/Users/Authenticate';
     
     try {
         
-        const response = yield call(() => axios.post(path, model));
+        const response = yield call(() => axios.post(path, model,{
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }));
     
         if(response.status === 200) {
             var user = response.data as User;
@@ -286,9 +314,14 @@ function* watchForLogin() {
 function* register(action: { type: string, payload: RegisterPayload }) {
     const model = action.payload.payload;
     const history = action.payload.history;
-    const path: string = 'api/Users/Register';
+    const base: string = getBaseUrl();
+        const path: string = base + 'api/Users/Register';
     try {
-        const response = yield call(() => axios.post(path, model));
+        const response = yield call(() => axios.post(path, model, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }));
     
         if(response.status === 200) {
             var user = response.data as User;

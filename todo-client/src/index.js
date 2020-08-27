@@ -23,22 +23,6 @@ const render = (component) => {
     document.getElementById('root')  
   );
 }
-// const{ dispatch } = store;
-// const axiosInstance = axios.create({
-//   headers:{
-//     "X-Requested-With": "XMLHttpRequest"
-//   }
-// }).interceptors.response.use(
-//   response => response,
-//   error => {
-//     const { status } = error.response;
-//     if(status !== 401){
-//       return Promise.reject(error);
-//     }
-//     dispatch(logout());
-//     return Promise.reject(error);
-//   }
-// );
 render(App);
 
 // If you want your app to work offline and load faster, you can change

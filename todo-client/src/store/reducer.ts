@@ -48,13 +48,13 @@ export function reducer(state = initialState, action: any) : TodoAppState {
                 return {
                     ...state,
                     loading: false,
-                    error: '[]'
+                    error: ''
                 };
             case types.SAVE_TODOLIST_FAIL:
                 return {
                     ...state,
                     loading: false,
-                    error: action.payload ?? '[]'
+                    error: action.payload ?? ''
                 };
             case types.SAVE_TODOLIST_LOADING:
                 return {
