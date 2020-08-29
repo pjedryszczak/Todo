@@ -5,7 +5,6 @@ FROM node:13.12.0-alpine
 RUN mkdir -p /app
 WORKDIR /app
 
-EXPOSE 3000
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /node_modules/.bin:$PATH
 
@@ -21,7 +20,7 @@ RUN yarn add react-scripts@3.4.1 -g
 COPY . /app
 
 # RUN ls -al
-
+EXPOSE 3000
 RUN ls -al
 # start app
 CMD ["npm", "start"]
