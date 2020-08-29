@@ -32,11 +32,7 @@ class Navbar extends Component<Props, LocalState> {
   logout = () => {    
     this.props.logout(this.props.history);
   }
-      render(){      
-      
-      
-      
-              
+      render(){
       return (
         <nav className="nav-wrapper blue darken-3">
             <div className="cointainer">

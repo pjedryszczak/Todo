@@ -39,10 +39,7 @@ handleDelete(todoList: TodoList){
                         <a href="#!" onClick={() => {this.handleDelete(todoList)}} className="waves-effect waves-light red darken-1 btn" id="delete-right">
                            Delete
                         </a>                                                                       
-                    </li>
-                     
-                     
-                                       
+                    </li>            
             </div>
         )}) : 
             <p className="center">"You have no todo's left,yey!"</p>
