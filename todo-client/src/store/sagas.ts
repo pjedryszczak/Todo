@@ -66,7 +66,7 @@ function* saveTodoList(action: { type: string, payload: TodoListPayload }){
         }
         else{
             yield put({ type: types.SAVE_TODOLIST_FAIL, payload: response.data });
-        }
+        } 
     } catch (error) {
         let errors = error.response.data 
         yield put({ type: types.SAVE_TODOLIST_FAIL, payload: errors});

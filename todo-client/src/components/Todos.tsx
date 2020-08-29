@@ -6,9 +6,7 @@ deleteTodo: (todo: Todo) => void,
 checkTodo: (todo: Todo) => void
 }
 
-export class Todos extends Component<ComponentProps> {
-
-    
+export class Todos extends Component<ComponentProps> {    
     render(){
         let todoList = this.props.todos.length ? this.props.todos.map(todo => {
             return(
