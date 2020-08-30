@@ -29,10 +29,10 @@ handleDelete(todoList: TodoList){
 }
     render(){     
     const {selectedListId} = this.state;  
-       let todoList = this.props.todoLists.length ? this.props.todoLists.map(todoList => {
+       let todoList = this.props.todoLists.length ? this.props.todoLists.map(todoList=> {
             return(
-                <div id="todoList">
-                    <li className="collection-item"  key={todoList.id} id={selectedListId && selectedListId === todoList.id ? "active" : ""}>
+                <div id="todoList" key={todoList.id}>
+                    <li className="collection-item"  id={selectedListId && selectedListId === todoList.id ? "active" : ""}>
                         <div onClick={() => this.handleSelect(todoList)} >
                             <span>{todoList.title}</span>
                         </div>

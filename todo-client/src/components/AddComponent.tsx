@@ -1,4 +1,5 @@
 import React, {Component, FormEvent } from 'react'
+import { sanitizeInput } from '../helpers';
 
 interface LocalState {
     content: string    
@@ -25,12 +26,15 @@ export default class AddComponent extends Component<ComponentProps,LocalState> {
             content: ''
         });
     }
+    handleKeyDown = (e: any) => {
+        sanitizeInput(e);
+    }
     render(){
         return(
             <div>
                 <form onSubmit={this.handleSubmit}>
                     <label>{this.props.placeholder}</label>
-                    <input type="text" onChange={this.handleChange} value={this.state.content} />
+                    <input type="text" onChange={this.handleChange} onKeyDown={this.handleKeyDown} value={this.state.content} />
                 </form>
             </div>
         )

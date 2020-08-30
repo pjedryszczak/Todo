@@ -37,7 +37,7 @@ class Navbar extends Component<Props, LocalState> {
         <nav className="nav-wrapper blue darken-3">
             <div className="cointainer">
                 <a href="/" className="brand-logo" ><BiBookBookmark/> Todo App</a>
-                <ul className="right">                     
+                <ul className="right" >                     
                     {this.props.loggedIn ? <a href="/" onClick={(e) => this.logout()}>Log Out</a> : <></>}
                 </ul>
                 <ul className="right">

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TodoApp.DataAccess.Interfaces;
 using TodoApp.Models;
@@ -20,7 +21,6 @@ namespace TodoApp.Services
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return null;
-
             var user = await _userRepository.GetUserByUsername(username);
 
             // check if username exists
@@ -45,7 +45,7 @@ namespace TodoApp.Services
             // validation
             if (string.IsNullOrWhiteSpace(password))
                 throw new Exception("Password is required");
-
+            
             var result = await _userRepository.GetUserByUsername(user.Username);
 
             // check if username exists
@@ -63,10 +63,9 @@ namespace TodoApp.Services
 
             return user;
         }
-        
-        // private helper methods
 
-        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        // private helper methods        
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             if (password == null) throw new ArgumentNullException("password");
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
@@ -78,7 +77,7 @@ namespace TodoApp.Services
             }
         }
 
-        private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+        private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
             if (password == null) throw new ArgumentNullException("password");
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");

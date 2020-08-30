@@ -10,8 +10,8 @@ export class Todos extends Component<ComponentProps> {
     render(){
         let todoList = this.props.todos.length ? this.props.todos.map(todo => {
             return(
-                <div id="todo">
-                    <li className="collection-item" key={todo.id}>
+                <div id="todo" key={todo.id}>
+                    <li className="collection-item" >
                         <div onClick={(e) => this.props.checkTodo(todo)}>
                             <span style={todo.checked ? {textDecorationLine: 'line-through'} : {}}>{todo.content}</span>
                         </div> 
@@ -24,7 +24,7 @@ export class Todos extends Component<ComponentProps> {
         }) : 
             <></>
         return (
-            <ul className="todos collection">
+            <ul className="todos collection" >
                 {todoList}
             </ul>
         );

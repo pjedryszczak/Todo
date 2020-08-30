@@ -34,6 +34,11 @@ namespace TodoApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AuthenticateAsync([FromBody]AuthenticateModel model)
         {
+            var sanitizedUsername = Sanitize.SanitizeInput(model.Username);
+            if(sanitizedUsername != model.Username)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "Usernamed is incorrect");
+            }
             var user = await _userService.Authenticate(model.Username, model.Password);
 
             if (user == null)
@@ -69,13 +74,15 @@ namespace TodoApp.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterAsync([FromBody]RegisterModel model)
         {
-            // map model to entity
-            var user = new User
+            var user = new User()
             {
-                Username = model.Username,
-                FirstName = model.FirstName
+                Username = Sanitize.SanitizeInput(model.Username),
+                FirstName = Sanitize.SanitizeInput(model.FirstName)
             };
-
+            if (user.FirstName != model.FirstName || user.Username != model.Username)
+            {
+                throw new Exception("Invalid character in Username and First Name");
+            }
             try
             {
                 // create user

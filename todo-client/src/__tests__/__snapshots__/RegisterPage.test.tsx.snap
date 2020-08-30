@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoginPage it renders with given state from Redux store 1`] = `
+<div>
+  <h2>
+    Register
+  </h2>
+  <form
+    name="form"
+    onSubmit={[Function]}
+  >
+    <div
+      className="form-group"
+    >
+      <label
+        htmlFor="firstName"
+      >
+        First Name
+      </label>
+      <input
+        className="form-control"
+        name="firstName"
+        onChange={[Function]}
+        onKeyDown={[Function]}
+        type="text"
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        htmlFor="username"
+      >
+        Username
+      </label>
+      <input
+        className="form-control"
+        name="username"
+        onChange={[Function]}
+        onKeyDown={[Function]}
+        type="text"
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        htmlFor="password"
+      >
+        Password
+      </label>
+      <input
+        className="form-control"
+        name="password"
+        onChange={[Function]}
+        type="password"
+        value=""
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <button
+        className="waves-effect waves-light blue darken-1 btn"
+      >
+        Register
+      </button>
+      <a
+        className="waves-effect waves-light green darken-1 btn"
+        href="/"
+        onClick={[Function]}
+      >
+        Cancel
+      </a>
+    </div>
+  </form>
+</div>
+`;

@@ -5,6 +5,7 @@ import { login, logout, clearUser } from './../store/actions';
 import { User, LoginModel, LoginPayload } from '../models';
 import { TodoAppState } from '../store/reducer';
 import { RouteComponentProps } from 'react-router';
+import { sanitizeInput } from '../helpers';
 
 interface DispatchProps {
     login: typeof login,
@@ -66,6 +67,9 @@ class LoginPage extends React.Component<Props, LocalState> {
             this.props.login(sagaPayload);
         }
     }
+    handleKeyDown(e: any) {
+        sanitizeInput(e);
+    }
 
     render() {
         const { loading } = this.props;
@@ -73,7 +77,7 @@ class LoginPage extends React.Component<Props, LocalState> {
         return (
             <div>
                 <h2>Login</h2>
-                <form className="col 12" name="form" onSubmit={this.handleSubmit}>
+                <form className="col 12" name="form" onSubmit={this.handleSubmit} onKeyDown={this.handleKeyDown}>
                     <div className={'form-group' + (submitted && !username ? ' has-error' : '')}>
                         <label htmlFor="username">Username</label>
                         <input type="text" className="form-control" name="username" value={username} onChange={this.handleChange} />

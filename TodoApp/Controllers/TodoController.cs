@@ -7,6 +7,7 @@ namespace TodoApp.Controllers
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Authorization;
+    using TodoApp.Helpers;
 
     [Authorize]
     [Produces("application/json")]
@@ -33,6 +34,7 @@ namespace TodoApp.Controllers
         [HttpPost]
         public async Task<ActionResult<TodoList>> SaveTodoList([FromBody] TodoList todoList)
         {
+            todoList.Title = Sanitize.SanitizeInput(todoList.Title);
             todoList.Id = await _todoListRepository.GetNextId();
             await _todoListRepository.Create(todoList);
             return new OkObjectResult(todoList);
@@ -69,6 +71,7 @@ namespace TodoApp.Controllers
         [HttpPost]
         public async Task<ActionResult<TodoList>> SaveTodo([FromBody] Todo todo)
         {
+            todo.Content = Sanitize.SanitizeInput(todo.Content);
             todo.Id = await _todoRepository.GetNextId();
             await _todoRepository.Create(todo);
             return new OkObjectResult(todo);

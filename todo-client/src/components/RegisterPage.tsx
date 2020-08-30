@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { register } from './../store/actions';
 import { User, RegisterPayload, RegisterModel } from '../models';
 import { TodoAppState } from '../store/reducer';
-
+import { sanitizeInput } from '../helpers';
 
 interface DispatchProps {
     register: typeof register
@@ -63,6 +63,9 @@ class LoginPage extends React.Component<Props, LocalState> {
             this.props.register(payload);
         }
     }
+    handleKeyDown(e: any){
+        sanitizeInput(e);
+    }
 
     render() {
         const { loading } = this.props;
@@ -73,14 +76,14 @@ class LoginPage extends React.Component<Props, LocalState> {
                 <form name="form" onSubmit={this.handleSubmit}>
                     <div className={'form-group' + (submitted && !firstName ? ' has-error' : '')}>
                         <label htmlFor="firstName">First Name</label>
-                        <input type="text" className="form-control" name="firstName" value={firstName} onChange={this.handleChange} />
+                        <input type="text" className="form-control" name="firstName" value={firstName} onChange={this.handleChange} onKeyDown={this.handleKeyDown}/>
                         {submitted && !firstName &&
                         <span data-error="wrong" >First Name is required</span>
                         }
                     </div>
                     <div className={'form-group' + (submitted && !username ? ' has-error' : '')}>
                         <label htmlFor="username">Username</label>
-                        <input type="text" className="form-control" name="username" value={username} onChange={this.handleChange} />
+                        <input type="text" className="form-control" name="username" value={username} onChange={this.handleChange} onKeyDown={this.handleKeyDown}/>
                         {submitted && !username &&
                         <span data-error="wrong" >Username is required</span>
                         }
