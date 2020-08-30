@@ -1,0 +1,9 @@
+{
+  "MongoDB": {
+    "Database": "TestDB",
+    "Host": "localhost",
+    "Port": 27017,
+    "User": "root",
+    "Password": "example"
+  }
+}

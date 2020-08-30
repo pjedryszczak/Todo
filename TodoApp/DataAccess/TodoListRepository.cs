@@ -23,10 +23,11 @@ namespace TodoApp.Models
         public Task<TodoList> GetTodoList(long id)
         {
             FilterDefinition<TodoList> filter = Builders<TodoList>.Filter.Eq(m => m.Id, id);
-            return _context
+            var result = _context
                     .TodoLists
                     .Find(filter)
                     .FirstOrDefaultAsync();
+            return result;
         }
         public async Task Create(TodoList todoList)
         {
